@@ -1,58 +1,40 @@
 <template>
   <div class="homePage">
-    <menuBer />
-    <div style="margin: 26px 0;">
-      <searchBar 
-          :placeholder="'搜索你感兴趣的大学'"
-          @searchText="searchTextFun"
-          @searchFun="searchFun"
-          :clearSearchText="clearSearchText"
-      />
+    <div class="titleDiv"></div>
+    <div class="carouselDiv">
+      <el-carousel trigger="click"  style="height: 100%;">
+        <el-carousel-item v-for="item in 4" :key="item">
+          <div class="img">{{ item }}</div>
+        </el-carousel-item>
+      </el-carousel>
     </div>
-    <div v-show="searchState">
-      <schoolCondition 
-          :clearState="clearState"
-          @schoolCondition="schoolConditionFun"
-      />
+    <div class="styleTypeDiv">
+      <div class="title">请选择AI作画风格</div>
+      <div class="typeList">
+        <div @click="typeFun(1)" :class="[styleIndex !== 1 ? 'style1' : 'style1r' ]" class=""></div>
+        <div @click="typeFun(2)" :class="[styleIndex !== 2 ? 'style2' : 'style2r' ]"></div>
+        <div @click="typeFun(3)" :class="[styleIndex !== 3 ? 'style3' : 'style3r' ]"></div>
+        <div @click="typeFun(4)" :class="[styleIndex !== 4 ? 'style4' : 'style4r' ]"></div>
+        <div @click="typeFun(5)" :class="[styleIndex !== 5 ? 'style5' : 'style5r' ]"></div>
+        <div @click="typeFun(6)" :class="[styleIndex !== 6 ? 'style6' : 'style6r' ]"></div>
+        <div @click="typeFun(7)" :class="[styleIndex !== 7 ? 'style7' : 'style7r' ]"></div>
+      </div>
     </div>
-    <div style="margin-top: 40px;">
-      <searchTable 
-          :tableData="schoolTableData"
-          @checkedList="checkedDataFun"
-          :delCompareData="delCompareData"
-          :total="totalSize"
-      />
+    <div class="makeDraw"></div>
+    <div class="textArea">
+      <div class="title">AI艺术图像生成</div>
+      <div class="introduce">AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介。
+      </div>
     </div>
-    <div class="block"  v-show="totalSize > 0">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="pageNum"
-          :page-sizes="[10, 20, 30]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          popper-class='select_bottom'
-          :total="totalSize">
-        </el-pagination>
+    <div class="footerDiv">
+      <div class="footerLogo"></div>
     </div>
-    <div v-show="checkedData.length > 0">
-        <compareColumn 
-            :checkedData="checkedData"
-            @delCompareList="delCompareFun"
-            :key="compareKey"
-        />
-    </div>
+   
+   
   </div>
 </template>
 
 <script>
-import menuBer from '@/components/menuBar'
-import searchBar from '@/components/searchBar'
-import schoolCondition from '@/components/schoolCondition'
-import searchTable from '@/components/searchTable'
-import compareColumn from '@/components/compareColumn'
-
-import { getSchoolTable } from "@/api/schoolApi";
 
 
 
@@ -60,95 +42,23 @@ export default {
   name: 'channel',
   data() {
     return {
-      searchText:'',
-      clearState:false,
-      clearSearchText: false,
-      schoolTableData: {},
-      pageNum: 1,
-      pageSize: 10,
-      totalSize: 0,
-      educationCode: '',
-      gradeCode: '',
-      provinceCode: '',
-      typeCode: '',
-      checkedData:[],
-      delCompareData: [],
-      compareKey:Math.random(),
-      loginState: false,
-      searchState: true
+      styleIndex: 0
     }
   },
   watch: {},
-  components: {menuBer,searchBar,schoolCondition,searchTable,compareColumn},
+  components: {},
   methods: {
-      delCompareFun(data){
-          this.delCompareData = data
-      },
-      checkedDataFun(data){
-          this.checkedData = data;
-          if(this.checkedData.length === 0){
-            this.compareKey = Math.random()
-          }
-      },
-      searchTextFun(data){
-          return
-          this.clearState = true;
-          this.searchText = data;
-          this.educationCode = '';
-          this.gradeCode = '';
-          this.provinceCode = '';
-          this.typeCode = '';
-          this.getSchoolTableList()
-      },
-      searchFun(data){
-          this.clearState = true;
-          this.searchText = data;
-          this.educationCode = '';
-          this.gradeCode = '';
-          this.provinceCode = '';
-          this.typeCode = '';
-          this.searchState = false;
-          this.getSchoolTableList()
-      },
-      schoolConditionFun(data){
-          this.educationCode = data.educationCode;
-          this.gradeCode = data.gradeCode;
-          this.provinceCode = data.provinceCode;
-          this.typeCode = data.typeCode;
-          this.searchText = '';
-          this.clearSearchText = true;
-          this.getSchoolTableList()
-      },
-      getSchoolTableList(){
-        getSchoolTable({
-            pageNum: this.pageNum,
-            pageSize: this.pageSize,
-            collegeName: this.searchText,
-            areaNo: this.provinceCode,
-            collegeType: this.typeCode,
-            collegeFlag: this.gradeCode,
-            educationLevel: this.educationCode
-        }).then(r => {
-            this.schoolTableData = r.data;
-            this.totalSize = r.data.totalSize;
-        }).catch((e) => {
-            console.log(e)
-        });
-      },
-      handleSizeChange(data){
-        this.pageSize = data;
-        this.getSchoolTableList()
-      },
-      handleCurrentChange(data){
-        this.pageNum = data;
-        this.getSchoolTableList()
+      typeFun(data) {
+        this.styleIndex = data;
       }
   },
   beforeDestroy(){
       
   },
   mounted: function() {
-        this.getSchoolTableList()
+    setTimeout(()=>{
+      // document.getElementsByClassName('el-carousel__container')[0].height = 1208 / 336+'px';
+    },1000)
   }
 }
 </script>
@@ -198,12 +108,154 @@ $cursor: #fff;
     color: #454545;
   }
 }
+.el-carousel__container {
+    height: 100% !important;
+  }
 </style>
 
 <style lang="scss" scoped>
+
+.el-carousel__item {
+  height: 100%;
+}
+
 .homePage{
-  // height: 100%;
+  height: 100%;
   background: #fff;
   position: relative;
+  background: url('./bg.png') no-repeat;
+  background-position: 2% 252%;
+  background-size: 120% 106%;
+  overflow: auto; 
+}
+
+.titleDiv {
+  width: 62%;
+  height: 7.5%;
+  background: url('./BT.png') no-repeat;
+  background-size: 100% 100%;
+  margin: 4% auto 0;
+}
+
+.carouselDiv {
+  height:27.8%;
+  width:88.2%;
+  margin: 1.6% auto 0;
+  .img {
+    height: 100%;
+    width: 100%;
+    background: url('./frame.png') no-repeat;
+    background-size: 100% 100%;
+  }
+}
+
+.styleTypeDiv {
+    height: 16%;
+    width: 88%;
+    background: #fff;
+    margin: 1.6% auto 0;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    // padding: 0 5.3%
+    .title {
+      color: #757575;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .typeList {
+      height: 53.5%;
+      display: flex;
+      justify-content: space-evenly;
+    }
+    .typeList > div {
+      width: 12%;
+      background-size: 100% 100%;
+      height: 100%
+    }
+    .style1 {
+      background: url('./pic/Frame1.png') no-repeat;
+    }
+    .style2 {
+      background: url('./pic/Frame2.png') no-repeat;
+    }
+    .style3 {
+      background: url('./pic/Frame3.png') no-repeat;
+    }
+    .style4 {
+      background: url('./pic/Frame4.png') no-repeat;
+    }
+    .style5 {
+      background: url('./pic/Frame5.png') no-repeat;
+    }
+    .style6 {
+      background: url('./pic/Frame6.png') no-repeat;
+    }
+    .style7 {
+      background: url('./pic/Frame7.png') no-repeat;
+    }
+
+    .style1r {
+      background: url('./pic/Frame1r.png') no-repeat;
+    }
+    .style2r {
+      background: url('./pic/Frame2r.png') no-repeat;
+    }
+    .style3r {
+      background: url('./pic/Frame3r.png') no-repeat;
+    }
+    .style4r {
+      background: url('./pic/Frame4r.png') no-repeat;
+    }
+    .style5r {
+      background: url('./pic/Frame5r.png') no-repeat;
+    }
+    .style6r {
+      background: url('./pic/Frame6r.png') no-repeat;
+    }
+    .style7r {
+      background: url('./pic/Frame7r.png') no-repeat;
+    }
+}
+.makeDraw {
+  background: url('./pic/Button.png') no-repeat;
+  background-size: 100% 100%;
+  height: 7.2%;
+  width:58.6%;
+  margin: 1.6% auto 0;
+}
+.textArea {
+  margin: 3.2% auto 0;
+  width: 85.7%;
+  .title {
+    color: #17181A;
+    font-size: 22px;
+    font-weight: bolder;
+    text-align: center;
+  }
+  .introduce {
+    color: #737373;
+    font-size: 16px;
+    margin-top: 20px;
+    line-height: 22px;
+  }
+}
+.footerDiv {
+  background: #D2D3D7;
+  height: 6.6%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  .footerLogo {
+    height: 40%;
+    width: 32.6%;
+    background: url('./pic/footerLogo.png') no-repeat;
+    background-size: 100% 100%;
+  }
 }
 </style>

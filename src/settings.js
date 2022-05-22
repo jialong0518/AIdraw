@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '学为高考志愿',
+  title: 'AI艺术图像生成',
 
   /**
    * @type {boolean} true | false

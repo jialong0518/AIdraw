@@ -43,117 +43,117 @@ let constantRoutes = [
     component: () => import('@/views/homePage/index'),
     hidden: true
   },
-  {
-    path: '/compareSchool',
-    name: 'compareSchool',
-    component: () => import('@/views/compareSchool/index'),
-    hidden: true
-  },
-  {
-    path: '/schoolDetails',
-    name: 'schoolDetails',
-    component: () => import('@/views/schoolDetails/index'),
-    hidden: true
-  },
-  {
-    path: '/collegeExpert',
-    name: 'collegeExpert',
-    component: () => import('@/views/collegeExpert/index'),
-    meta: {
-      title: '高考专家'
-    },
-    hidden: true
-  },
-  {
-    path: '/teacherDetail',
-    name: 'teacherDetail',
-    component: () => import('@/views/teacherDetail/index'),
-    meta: {
-      title: '专家详情'
-    },
-    hidden: true
-  },
-  {
-    path: '/schoolLeagueTable',
-    name: 'schoolLeagueTable',
-    component: () => import('@/views/schoolLeagueTable/index'),
-    meta: {
-      title: '学校排行榜'
-    },
-    hidden: true
-  },
-  {
-    path: '/searchMajor',
-    name: 'searchMajor',
-    component: () => import('@/views/searchMajor/index'),
-    meta: {
-      title: '查专业'
-    },
-    hidden: true
-  },
-  {
-    path: '/batchLine',
-    name: 'batchLine',
-    component: () => import('@/views/batchLine/index'),
-    meta: {
-      title: '批次线'
-    },
-    hidden: true
-  },
-  {
-    path: '/subjectAssessment',
-    name: 'subjectAssessment',
-    component: () => import('@/views/batchLine/subjectAssessment'),
-    meta: {
-      title: '学科评估'
-    },
-    hidden: true
-  },
-  {
-    path: '/scoreTable',
-    name: 'scoreTable',
-    component: () => import('@/views/batchLine/scoreTable'),
-    meta: {
-      title: '一分一段表'
-    },
-    hidden: true
-  },
-  {
-    path: '/majorDetails',
-    name: 'majorDetails',
-    component: () => import('@/views/majorDetails/index'),
-    meta: {
-      title: '专业详情'
-    },
-    hidden: true
-  },
-  {
-    path: '/userCenter',
-    name: 'userCenter',
-    component: () => import('@/views/userCenter/index'),
-    meta: {
-      title: '个人中心'
-    },
-    hidden: true,
-    children: [
-      {
-        path: '/userMeans',                     //我的资料
-        component: () => import('@/views/userCenter/userMeans'),
-        meta: {
-          title: '我的资料'
-        }
-      },
-      {
-        path: '/changePassword',                     //修改密码
-        component: () => import('@/views/userCenter/changePassword'),
-        meta: {
-          title: '修改密码'
-        }
-      },
+  // {
+  //   path: '/compareSchool',
+  //   name: 'compareSchool',
+  //   component: () => import('@/views/compareSchool/index'),
+  //   hidden: true
+  // },
+  // {
+  //   path: '/schoolDetails',
+  //   name: 'schoolDetails',
+  //   component: () => import('@/views/schoolDetails/index'),
+  //   hidden: true
+  // },
+  // {
+  //   path: '/collegeExpert',
+  //   name: 'collegeExpert',
+  //   component: () => import('@/views/collegeExpert/index'),
+  //   meta: {
+  //     title: '高考专家'
+  //   },
+  //   hidden: true
+  // },
+  // {
+  //   path: '/teacherDetail',
+  //   name: 'teacherDetail',
+  //   component: () => import('@/views/teacherDetail/index'),
+  //   meta: {
+  //     title: '专家详情'
+  //   },
+  //   hidden: true
+  // },
+  // {
+  //   path: '/schoolLeagueTable',
+  //   name: 'schoolLeagueTable',
+  //   component: () => import('@/views/schoolLeagueTable/index'),
+  //   meta: {
+  //     title: '学校排行榜'
+  //   },
+  //   hidden: true
+  // },
+  // {
+  //   path: '/searchMajor',
+  //   name: 'searchMajor',
+  //   component: () => import('@/views/searchMajor/index'),
+  //   meta: {
+  //     title: '查专业'
+  //   },
+  //   hidden: true
+  // },
+  // {
+  //   path: '/batchLine',
+  //   name: 'batchLine',
+  //   component: () => import('@/views/batchLine/index'),
+  //   meta: {
+  //     title: '批次线'
+  //   },
+  //   hidden: true
+  // },
+  // {
+  //   path: '/subjectAssessment',
+  //   name: 'subjectAssessment',
+  //   component: () => import('@/views/batchLine/subjectAssessment'),
+  //   meta: {
+  //     title: '学科评估'
+  //   },
+  //   hidden: true
+  // },
+  // {
+  //   path: '/scoreTable',
+  //   name: 'scoreTable',
+  //   component: () => import('@/views/batchLine/scoreTable'),
+  //   meta: {
+  //     title: '一分一段表'
+  //   },
+  //   hidden: true
+  // },
+  // {
+  //   path: '/majorDetails',
+  //   name: 'majorDetails',
+  //   component: () => import('@/views/majorDetails/index'),
+  //   meta: {
+  //     title: '专业详情'
+  //   },
+  //   hidden: true
+  // },
+  // {
+  //   path: '/userCenter',
+  //   name: 'userCenter',
+  //   component: () => import('@/views/userCenter/index'),
+  //   meta: {
+  //     title: '个人中心'
+  //   },
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: '/userMeans',                     //我的资料
+  //       component: () => import('@/views/userCenter/userMeans'),
+  //       meta: {
+  //         title: '我的资料'
+  //       }
+  //     },
+  //     {
+  //       path: '/changePassword',                     //修改密码
+  //       component: () => import('@/views/userCenter/changePassword'),
+  //       meta: {
+  //         title: '修改密码'
+  //       }
+  //     },
 
       
-    ]
-  },
+  //   ]
+  // },
   
   // {
   //   path: '/',
@@ -161,7 +161,7 @@ let constantRoutes = [
   //     path: 'index',
   //     name: 'index',
   //     component: () => import('@/views/homePage/index'),
-  //     meta: { title: '学为高考志愿' }
+  //     meta: { title: 'AI艺术图像生成' }
   //   }]
   // },
   // {
@@ -170,7 +170,7 @@ let constantRoutes = [
   //     path: 'compareSchool',
   //     name: 'compareSchool',
   //     component: () => import('@/views/compareSchool/index'),
-  //     meta: { title: '学为高考志愿' }
+  //     meta: { title: 'AI艺术图像生成' }
   //   }]
   // },
   // {
