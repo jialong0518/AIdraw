@@ -38,11 +38,11 @@ module.exports = {
       errors: true
     },
     proxy: {  //配置跨域  
-      '/gkzy-web-service': {
-        target: 'http://123.56.254.215:16500/gkzy-web-service',  //这里后台的地址模拟的;应该填写你们真实的后台接口
+      '/aipic': {
+        target: 'https://huanqiu-ai.com/aipic',  //这里后台的地址模拟的;应该填写你们真实的后台接口
         // target: 'http://192.168.2.104:16500/gkzy-web-service',  //这里后台的地址模拟的;应该填写你们真实的后台接口
         pathRewrite: {
-          '^/gkzy-web-service': ''  //请求的时候使用这个api就可以
+          '^/aipic': ''  //请求的时候使用这个api就可以
         }
       }
     }

@@ -1,65 +1,145 @@
 <template>
   <div class="homePage">
-    <div class="titleDiv"></div>
+    <!-- <div class="titleDiv"></div> !-->
     <div class="carouselDiv">
-      <el-carousel trigger="click"  style="height: 100%;">
-        <el-carousel-item>
-          <div class="img" @click="imgFun(1)"><div v-show="classSign == '1'" :class="{'img1': true,'animated':classSign === 1, 'jackInTheBox':classSign === 1}">{{ 1 }}</div></div>
+      <div class="bordercss" v-show="oldPic !== ''||newPic !== ''||imgTxt !==''">
+            <div class="img" style="position: relative;">
+              <div class="txtDiv" v-show="imgTxt !==''&&newPic ===''">{{imgTxt}}</div>
+              <div @click="picfinishFun" class="backmake" v-show="status !== '已生成' && status !== ''"></div>
+              <img :src="`${imgUrl}/${newPic !=='' ? newPic : oldPic}`" :style="{'filter': `blur(${filterNum}px)`}" class="img1" />
+              <div v-show="mengbanshow" class="filterDiv" >
+                <div :style="{'filter': filterArr.indexOf(item) !== -1 || filterArr.length > 480 ? '' :'blur(10px)','background': filterArr.indexOf(item) !== -1 || filterArr.length > 480 ? '' :'#fff'}" v-for="item in 500" :key="item"></div>
+              </div>
+            </div>
+          </div>
+      <el-carousel v-show="oldPic === ''&&newPic === ''&&imgTxt ===''" ref="carousel" trigger="click" :autoplay='false' :setActiveItem="carouselIndex"  style="height: 100%;">
+        <el-carousel-item name="1">
+          <div class="bordercss">
+            <div class="img sumiaoback" style="position: relative">
+            </div>
+          </div>
         </el-carousel-item>
-        <el-carousel-item>
-          <div class="img" @click="imgFun(2)"><div v-show="classSign == '2'" :class="{'img1': true,'animated2':classSign === 2, 'zoomInLeft':classSign === 2}">{{ 2 }}</div></div>
+        <el-carousel-item name="2">
+          <div class="bordercss">
+            <div class="img shuimoback" style="position: relative;">
+            </div>
+          </div>
         </el-carousel-item>
-        <el-carousel-item>
-          <div class="img" @click="imgFun(3)"><div v-show="classSign == '3'" :class="{'img1': true,'animated3':classSign === 3, 'zoomIn':classSign === 3}">{{ 3 }}</div></div>
+        <el-carousel-item name="3">
+          <div class="bordercss">
+            <div class="img monaiback" style="position: relative;">
+            </div>
+          </div>
         </el-carousel-item>
-        <el-carousel-item>
-          <div class="img" @click="imgFun(4)"><div v-show="classSign == '4'" :class="{'img1': true,'animated4':classSign === 4, 'rotateIn':classSign === 4}">{{ 4 }}</div></div>
+        <el-carousel-item name="4">
+          <div class="bordercss">
+            <div class="img fangaoback" style="position: relative;">
+            </div>
+          </div>
         </el-carousel-item>
-        <el-carousel-item>
-          <div class="img" @click="imgFun(5)"><div v-show="classSign == '5'" :class="{'img1': true,'animated5':classSign === 5, 'flipInY':classSign === 5}">{{ 5 }}</div></div>
+        <el-carousel-item name="5">
+          <div class="bordercss">
+            <div class="img caiqianback" style="position: relative;">
+            </div>
+          </div>
         </el-carousel-item>
-        <el-carousel-item>
-          <div class="img" @click="imgFun(6)"><div v-show="classSign == '6'" :class="{'img1': true,'animated6':classSign === 6, 'flipInX':classSign === 6}">{{ 6 }}</div></div>
+        <el-carousel-item name="6">
+          <div class="bordercss">
+            <div class="img bopuback" style="position: relative;">
+            </div>
+          </div>
         </el-carousel-item>
+        <el-carousel-item name="7">
+          <div class="bordercss">
+            <div class="img banhuaback" style="position: relative;">
+            </div>
+          </div>
+        </el-carousel-item>
+        
       </el-carousel>
     </div>
-    <div class="styleTypeDiv">
-      <div class="title">请选择AI作画风格</div>
+    <div class="styleTypeDiv" v-show="status !== '已生成'">
+      <div class="title">请选择“白泽”作画风格</div>
       <div class="typeList">
-        <div @click="typeFun(1)" :class="[styleIndex !== 1 ? 'style1' : 'style1r' ]" class=""></div>
+        <!--
+        <div @click="typeFun(1)" :class="[styleIndex !== 1 ? 'style1' : 'style1r' ]"></div>
         <div @click="typeFun(2)" :class="[styleIndex !== 2 ? 'style2' : 'style2r' ]"></div>
         <div @click="typeFun(3)" :class="[styleIndex !== 3 ? 'style3' : 'style3r' ]"></div>
         <div @click="typeFun(4)" :class="[styleIndex !== 4 ? 'style4' : 'style4r' ]"></div>
         <div @click="typeFun(5)" :class="[styleIndex !== 5 ? 'style5' : 'style5r' ]"></div>
         <div @click="typeFun(6)" :class="[styleIndex !== 6 ? 'style6' : 'style6r' ]"></div>
-        <div @click="typeFun(7)" :class="[styleIndex !== 7 ? 'style7' : 'style7r' ]"></div>
+        <div @click="typeFun(7)" :class="[styleIndex !== 7 ? 'style7' : 'style7r' ]"></div>  
+        !-->
+        <div :key="item" v-for="item in 7" @click="typeFun(item)">
+          <div :class="`style${item}`">
+            <div v-show="styleIndex === item"></div>
+          </div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 1">素描</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 2">水墨</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 3">莫奈</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 4">梵高</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 5">彩铅</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 6">波普</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 7">版画</div>
+        </div>
       </div>
     </div>
-    <div id="three-container"></div>
-    <div class="makeDraw"></div>
-    <div class="textArea">
-      <div class="title">AI艺术图像生成</div>
-      <div class="introduce">AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介AI艺术图像生成简介。
-      </div>
+    <div class="makeDraw" v-show="status === ''" @click="QRcodeFun"></div>
+    <div class="makeDraw1" v-show="status === '准备中' && styleIndex === ''"></div>
+    <div class="makeDraw" v-show="status === '准备中' && styleIndex !== ''" @click="startMakeFun"></div>
+    <div class="makeDraw2" v-show="status === '进行中'"></div>
+    
+    <div v-show="status === '已生成'" style="width:88.2%;height: 6.8%;margin: 15% auto 0;">
+      <div @click="sendmsgFun" class="newMake"></div>
+      <div @click="picfinishFun" class="send"></div>
     </div>
+    <div v-show="status === '已生成'" style="color: #6A718B;font-size: 24px;text-align: center;margin-top: 7%;">* 发送至手机后，请在手机界面点击“刷新”</div>
+    <div v-show="status === '已生成'" style="color: #000;font-size: 32px;text-align: center;margin-top: 3%;"><span style="color: blue;">{{goNum}}</span>后将自动返回</div>
     <div class="footerDiv">
       <div class="footerLogo"></div>
     </div>
-   
-   
+    <div class="mantle" v-show="QRcodeSHow">
+      <div>
+        <div class="title">—  扫码体验AI作画  —</div>
+        <div class="QRcode"></div>
+        <div>请扫描二维码</div>
+        <div>上传照片或文字，告诉白泽你想画什么</div>
+        <div @click="QRcodeClose">好的</div>
+      </div>
+    </div>
+    <div class="mantle1" v-show="QRcodeSHow"></div>
+
   </div>
 </template>
 
 <script>
 // import { init } from './script'
+import { picresult, picfinish, playerstatus, sendmsg } from "@/api/account";
 
 
 export default {
   name: 'channel',
   data() {
     return {
-      styleIndex: 0,
-      classSign: ''
+      styleIndex: '',
+      classSign: '',
+      filterArr: [],
+      filterNum: 0,
+      QRcodeSHow: false,
+      picInterval: null,
+      oldPic: '',
+      newPic: '',
+      status: '',
+      opendId: '021mg2Ga1VbNqD0LbFFa1VyMXL3mg2Gf',
+      carouselIndex: '1',
+      imgUrl: 'https://huanqiu-ai.com/aibz/uploadFile',
+      styleArr: [ 'sumiao.png', 'shuimo.jpeg','monai.png', 'fangao.jpeg', 'caiqian.jpeg', 'bopu.png', 'banhua.png' ],
+      imgTxt: '',
+      gameType: '',
+      intervalTime: null,
+      goNum: 30,
+      setTimer: null,
+      mengbanshow: false
     }
   },
   watch: {},
@@ -71,257 +151,189 @@ export default {
     },
       typeFun(data) {
         this.styleIndex = data;
+        this.$refs.carousel.setActiveItem(data - 1)
       },
-      // init() {
-      //   var root = new THREERoot({
-      //     createCameraControls: !true,
-      //     antialias: (window.devicePixelRatio === 1),
-      //     fov: 80
-      //   });
+    QRcodeFun() {
+      this.QRcodeSHow = true;
+      this.picInterval = setInterval(()=>{
+        this.picStateFun()
+      },5000)
+    },
+    QRcodeClose() {
+      this.QRcodeSHow = false;
+    },
+    startMake() {
 
-      //   root.renderer.setClearColor(0x000000, 0);
-      //   root.renderer.setPixelRatio(window.devicePixelRatio || 1);
-      //   root.camera.position.set(0, 0, 60);
+    },
+     picStateFun(){
+      picresult({
+        openid: '',
+        equipNo: 2
+      }).then(r => {
+        // 39.105.33.147:8621
+          if(r.data.newPic === '39.105.33.147:8621') {
+            clearInterval(this.picInterval);
+            this.$alert('图片生成失败，请点击重绘，重新传输图片', '提示', {
+              confirmButtonText: '重绘',
+              callback: action => {
+               location.reload()
+              }
+            });
+            return
+          }
 
-      //   var width = 100;
-      //   var height = 60;
+          if(r.data.newPic&&r.data.newPic !== '') {
+            this.mengbanshow = true;
+            this.filterArr = [];
+            this.filterNum = 20;
+            this.maskTiming()
+          }
+          if(r.code === 1) {
+            this.oldPic = '';
+            this.newPic = '';
+            this.status = '';
+            this.opendId = '';
+            this.gameType = '';
+            this.imgTxt = '';
+          } else {
+            this.oldPic = r.data.oldPic;
+            this.newPic = r.data.newPic;
+            this.status = r.data.status;
+            this.opendId = r.data.openid;
+            this.gameType = r.data.gameType;
+            this.imgTxt = r.data.texts||'';
+          }
+          if(this.status === '已生成') {
+            clearInterval(this.picInterval);
+          }
+          if(this.status === '准备中') {
+            clearInterval(this.intervalTime);
+          }
+          console.log(this.oldPic)
+      }).catch((e) => {
+          console.log(e)
+      });
+    },
+    sendmsgFun() {
+      sendmsg(
+        this.opendId
+      ).then(r => {
+           this.picfinishFun();
+      }).catch((e) => {
+          console.log(e)
+      });
+    },
+    picfinishFun(){
+      picfinish({
+        openid: this.opendId,
+        equipNo: 2
+      }).then(r => {
+            this.oldPic = '';
+            this.newPic = '';
+            this.status = '';
+            this.opendId = '';
+            this.gameType = '';
+            this.imgTxt = '';
+            this.mengbanshow = false;
+            this.filterArr = [];
+            this.filterNum = 0;
+            clearInterval(this.picInterval);
+            clearInterval(this.setTimer);
+            this.lunboFun();
 
-      //   var slide = new Slide(width, height, 'out');
-      //   var l1 = new THREE.ImageLoader();
-      //   l1.setCrossOrigin('Anonymous');
-      //   l1.load('images/winter.jpg', function(img) {
-      //     slide.setImage(img);
-      //   })
-      //   root.scene.add(slide);
-
-      //   var slide2 = new Slide(width, height, 'in');
-      //   var l2 = new THREE.ImageLoader();
-      //   l2.setCrossOrigin('Anonymous');
-      //   l2.load('images/spring.jpg', function(img) {
-      //     slide2.setImage(img);
-      //   })
-        
-      //   root.scene.add(slide2);
-
-      //   var tl = new TimelineMax({repeat:0, repeatDelay:1.0, yoyo: true});
-
-      //   tl.add(slide.transition(), 0);
-      //   tl.add(slide2.transition(), 0);
-      //   // createTweenScrubber(tl);
-
-      //   window.addEventListener('keyup', function(e) {
-      //     console.log('123')
-      //     var tl = new TimelineMax({repeat:0, repeatDelay:1.0, yoyo: true});
-      //     tl.add(slide.transition(), 0);
-      //     tl.add(slide2.transition(), 0);
-      //   });
-      // },
-      // Slide(width, height, animationPhase) {
-      //   var plane = new THREE.PlaneGeometry(width, height, width * 2, height * 2);
-
-      //   THREE.BAS.Utils.separateFaces(plane);
-
-      //   var geometry = new SlideGeometry(plane);
-
-      //   geometry.bufferUVs();
-
-      //   var aAnimation = geometry.createAttribute('aAnimation', 2);
-      //   var aStartPosition = geometry.createAttribute('aStartPosition', 3);
-      //   var aControl0 = geometry.createAttribute('aControl0', 3);
-      //   var aControl1 = geometry.createAttribute('aControl1', 3);
-      //   var aEndPosition = geometry.createAttribute('aEndPosition', 3);
-
-      //   var i, i2, i3, i4, v;
-
-      //   var minDuration = 0.8;
-      //   var maxDuration = 1.2;
-      //   var maxDelayX = 0.9;
-      //   var maxDelayY = 0.125;
-      //   var stretch = 0.11;
-
-      //   this.totalDuration = maxDuration + maxDelayX + maxDelayY + stretch;
-
-      //   var startPosition = new THREE.Vector3();
-      //   var control0 = new THREE.Vector3();
-      //   var control1 = new THREE.Vector3();
-      //   var endPosition = new THREE.Vector3();
-
-      //   var tempPoint = new THREE.Vector3();
-
-      //   function getControlPoint0(centroid) {
-      //     var signY = Math.sign(centroid.y);
-
-      //     tempPoint.x = THREE.Math.randFloat(0.1, 0.3) * 50;
-      //     tempPoint.y = signY * THREE.Math.randFloat(0.1, 0.3) * 70;
-      //     tempPoint.z = THREE.Math.randFloatSpread(20);
-
-      //     return tempPoint;
-      //   }
-
-      //   function getControlPoint1(centroid) {
-      //     var signY = Math.sign(centroid.y);
-
-      //     tempPoint.x = THREE.Math.randFloat(0.3, 0.6) * 50;
-      //     tempPoint.y = -signY * THREE.Math.randFloat(0.3, 0.6) * 70;
-      //     tempPoint.z = THREE.Math.randFloatSpread(20);
-
-      //     return tempPoint;
-      //   }
-
-      //   for (i = 0, i2 = 0, i3 = 0, i4 = 0; i < geometry.faceCount; i++, i2 += 6, i3 += 9, i4 += 12) {
-      //     var face = plane.faces[i];
-      //     var centroid = THREE.BAS.Utils.computeCentroid(plane, face);
-
-      //     // animation
-      //     var duration = THREE.Math.randFloat(minDuration, maxDuration);
-      //     var delayX = THREE.Math.mapLinear(centroid.x, -width * 0.5, width * 0.5, 0.0, maxDelayX);
-      //     var delayY;
-
-      //     if (animationPhase === 'in') {
-      //       delayY = THREE.Math.mapLinear(Math.abs(centroid.y), 0, height * 0.5, 0.0, maxDelayY)
-      //     }
-      //     else {
-      //       delayY = THREE.Math.mapLinear(Math.abs(centroid.y), 0, height * 0.5, maxDelayY, 0.0)
-      //     }
-
-      //     for (v = 0; v < 6; v += 2) {
-      //       aAnimation.array[i2 + v]     = delayX + delayY + (Math.random() * stretch * duration);
-      //       aAnimation.array[i2 + v + 1] = duration;
-      //     }
-
-      //     // positions
-
-      //     endPosition.copy(centroid);
-      //     startPosition.copy(centroid);
-
-      //     if (animationPhase === 'in') {
-      //       control0.copy(centroid).sub(getControlPoint0(centroid));
-      //       control1.copy(centroid).sub(getControlPoint1(centroid));
-      //     }
-      //     else { // out
-      //       control0.copy(centroid).add(getControlPoint0(centroid));
-      //       control1.copy(centroid).add(getControlPoint1(centroid));
-      //     }
-
-      //     for (v = 0; v < 9; v += 3) {
-      //       aStartPosition.array[i3 + v]     = startPosition.x;
-      //       aStartPosition.array[i3 + v + 1] = startPosition.y;
-      //       aStartPosition.array[i3 + v + 2] = startPosition.z;
-
-      //       aControl0.array[i3 + v]     = control0.x;
-      //       aControl0.array[i3 + v + 1] = control0.y;
-      //       aControl0.array[i3 + v + 2] = control0.z;
-
-      //       aControl1.array[i3 + v]     = control1.x;
-      //       aControl1.array[i3 + v + 1] = control1.y;
-      //       aControl1.array[i3 + v + 2] = control1.z;
-
-      //       aEndPosition.array[i3 + v]     = endPosition.x;
-      //       aEndPosition.array[i3 + v + 1] = endPosition.y;
-      //       aEndPosition.array[i3 + v + 2] = endPosition.z;
-      //     }
-      //   }
-
-      //   var material = new THREE.BAS.BasicAnimationMaterial(
-      //     {
-      //       shading: THREE.FlatShading,
-      //       side: THREE.DoubleSide,
-      //       uniforms: {
-      //         uTime: {type: 'f', value: 0}
-      //       },
-      //       shaderFunctions: [
-      //         THREE.BAS.ShaderChunk['cubic_bezier'],
-      //         //THREE.BAS.ShaderChunk[(animationPhase === 'in' ? 'ease_out_cubic' : 'ease_in_cubic')],
-      //         THREE.BAS.ShaderChunk['ease_in_out_cubic'],
-      //         THREE.BAS.ShaderChunk['quaternion_rotation']
-      //       ],
-      //       shaderParameters: [
-      //         'uniform float uTime;',
-      //         'attribute vec2 aAnimation;',
-      //         'attribute vec3 aStartPosition;',
-      //         'attribute vec3 aControl0;',
-      //         'attribute vec3 aControl1;',
-      //         'attribute vec3 aEndPosition;',
-      //       ],
-      //       shaderVertexInit: [
-      //         'float tDelay = aAnimation.x;',
-      //         'float tDuration = aAnimation.y;',
-      //         'float tTime = clamp(uTime - tDelay, 0.0, tDuration);',
-      //         'float tProgress = ease(tTime, 0.0, 1.0, tDuration);'
-      //         //'float tProgress = tTime / tDuration;'
-      //       ],
-      //       shaderTransformPosition: [
-      //         (animationPhase === 'in' ? 'transformed *= tProgress;' : 'transformed *= 1.0 - tProgress;'),
-      //         'transformed += cubicBezier(aStartPosition, aControl0, aControl1, aEndPosition, tProgress);'
-      //       ]
-      //     },
-      //     {
-      //       map: new THREE.Texture(),
-      //     }
-      //   );
-
-      //   THREE.Mesh.call(this, geometry, material);
-
-      //   this.frustumCulled = false;
-      //   Slide.prototype = Object.create(THREE.Mesh.prototype);
-      //   Slide.prototype.constructor = Slide;
-      //   Object.defineProperty(Slide.prototype, 'time', {
-      //     get: function () {
-      //       return this.material.uniforms['uTime'].value;
-      //     },
-      //     set: function (v) {
-      //       this.material.uniforms['uTime'].value = v;
-      //     }
-      //   });
-
-      //   Slide.prototype.setImage = function(image) {
-      //     this.material.uniforms.map.value.image = image;
-      //     this.material.uniforms.map.value.needsUpdate = true;
-      //   };
-
-      //   Slide.prototype.transition = function() {
-      //     return TweenMax.fromTo(this, 3.0, {time:0.0}, {time:this.totalDuration, ease:Power0.easeInOut});
-      //   };
-      // },
-      // SlideGeometry(model) {
-      //   THREE.BAS.ModelBufferGeometry.call(this, model);
-      //   SlideGeometry.prototype = Object.create(THREE.BAS.ModelBufferGeometry.prototype);
-      //   SlideGeometry.prototype.constructor = SlideGeometry;
-      //   SlideGeometry.prototype.bufferPositions = function () {
-      //     var positionBuffer = this.createAttribute('position', 3).array;
-
-      //     for (var i = 0; i < this.faceCount; i++) {
-      //       var face = this.modelGeometry.faces[i];
-      //       var centroid = THREE.BAS.Utils.computeCentroid(this.modelGeometry, face);
-
-      //       var a = this.modelGeometry.vertices[face.a];
-      //       var b = this.modelGeometry.vertices[face.b];
-      //       var c = this.modelGeometry.vertices[face.c];
-
-      //       positionBuffer[face.a * 3]     = a.x - centroid.x;
-      //       positionBuffer[face.a * 3 + 1] = a.y - centroid.y;
-      //       positionBuffer[face.a * 3 + 2] = a.z - centroid.z;
-
-      //       positionBuffer[face.b * 3]     = b.x - centroid.x;
-      //       positionBuffer[face.b * 3 + 1] = b.y - centroid.y;
-      //       positionBuffer[face.b * 3 + 2] = b.z - centroid.z;
-
-      //       positionBuffer[face.c * 3]     = c.x - centroid.x;
-      //       positionBuffer[face.c * 3 + 1] = c.y - centroid.y;
-      //       positionBuffer[face.c * 3 + 2] = c.z - centroid.z;
-      //     }
-      //   };
-      // }
+      }).catch((e) => {
+          console.log(e)
+      });
+    },
+    startMakeFun(){
+      playerstatus({
+          "openid": this.opendId,
+          "status": "进行中",
+          "gameType": this.gameType,
+          "oldPic": this.gameType === '图片' ? this.oldPic : '',
+          "texts": this.gameType === '文字' ? this.imgTxt : '',
+          "picStyle": this.styleArr[this.styleIndex - 1],
+          "equipNo": 2
+      }).then(r => {
+        if(r.code === 0) {
+          this.makeUp = false;
+        } else {
+           Dialog.alert({
+              title: '提示',
+              message: r.msg,
+            }).then(() => {
+              this.makeUp = false;
+            });
+        }
+      }).catch((r) => {
+          let msg = r.toString()
+        msg = msg.replace('Error:', '')
+              Dialog.alert({
+              title: '提示',
+              message: msg,
+            }).then(() => {
+              this.makeUp = false;
+            });
+      });
+    },
+    maskTiming() {
+      let timeArr = [];
+      let timeFun = setInterval(()=>{
+        // document.getElementsByClassName('el-carousel__container')[0].height = 1208 / 336+'px';
+        for(let i = 0; i< 3; i++) {
+          let mathNum = Math.floor(Math.random()*500+1);
+          if(timeArr.indexOf(mathNum) === -1){
+            Math.floor(Math.random()*500+1)
+            this.filterArr.push(mathNum)
+            timeArr.push(mathNum)
+          }
+        }
+        // let mathNum = Math.floor(Math.random()*500+1);
+        //   if(timeArr.indexOf(mathNum) === -1){
+        //     Math.floor(Math.random()*500+1)
+        //     this.filterArr.push(mathNum)
+        //     timeArr.push(mathNum)
+        //   }
+        if(100 < this.filterArr.length&&this.filterArr.length < 200)this.filterNum = 15;
+        if(200 < this.filterArr.length&&this.filterArr.length < 300)this.filterNum = 10;
+        if(300 < this.filterArr.length&&this.filterArr.length < 400)this.filterNum = 5;
+        if(400 < this.filterArr.length&&this.filterArr.length < 500)this.filterNum = 0;
+        if(this.filterArr.length === 485) {
+          clearInterval(timeFun)
+          timeFun = null;
+          this.goNum = 30;
+          this.goNumFun()
+        }
+      },10)
+    },
+    goNumFun() {
+      this.setTimer = setInterval(()=>{
+        this.goNum = this.goNum - 1;
+          console.log(this.goNum)
+          if(this.goNum === 0 || this.goNum < 0) {
+            clearInterval(this.setTimer)
+            console.log(this.goNum)
+            this.picfinishFun()
+          }
+      }, 1000)
+    },
+    lunboFun() {
+      this.intervalTime = setInterval(()=>{
+        if(this.styleIndex === 7) this.styleIndex = 0
+        this.styleIndex ++;
+        this.$refs.carousel.setActiveItem(this.styleIndex - 1)
+      }, 6000)
+    }
   },
   beforeDestroy(){
-      
+      clearInterval(this.intervalTime)
+      clearInterval(this.picInterval)
   },
   mounted: function() {
-    // init()
-    setTimeout(()=>{
-      // document.getElementsByClassName('el-carousel__container')[0].height = 1208 / 336+'px';
-    },1000)
-    
+    clearInterval(this.intervalTime)
+    clearInterval(this.picInterval)
+    this.lunboFun();
+    // this.picfinishFun()
   }
 }
 </script>
@@ -382,11 +394,17 @@ $cursor: #fff;
   height: 100%;
 }
 
+// .bj2 {
+//   height: 30%;
+//   width: 100%;
+//   background: url('./bg.png') no-repeat;
+// }
+
 .homePage{
   height: 100%;
   background: #fff;
   position: relative;
-  background: url('./bg.png') no-repeat;
+  background: url('./pic/newBj.png') no-repeat;
   background-position: 2% 252%;
   background-size: 120% 106%;
   overflow: auto; 
@@ -404,16 +422,45 @@ $cursor: #fff;
   height:27.8%;
   width:88.2%;
   margin: 1.6% auto 0;
+  margin-top: 20%;
   .img {
-    height: 100%;
-    width: 100%;
-    background: url('./frame.png') no-repeat;
+    height: 81%;
+    width: 89%;
+    background: url('./pic/imgpic.png') no-repeat;
+    background-size: 100% 100%;
+  }
+  .sumiaoback {
+    background: url('./pic/sumiao.jpg') no-repeat;
+    background-size: 100% 100%;
+  }
+  .shuimoback {
+    background: url('./pic/shuimo.jpg') no-repeat;
+    background-size: 100% 100%;
+  }
+  .monaiback {
+    background: url('./pic/monai.jpg') no-repeat;
+    background-size: 100% 100%;
+  }
+  .fangaoback {
+    background: url('./pic/fangao.jpg') no-repeat;
+    background-size: 100% 100%;
+  }
+  .caiqianback {
+    background: url('./pic/caiqian.jpg') no-repeat;
+    background-size: 100% 100%;
+  }
+  .bopuback {
+    background: url('./pic/bopu.jpg') no-repeat;
+    background-size: 100% 100%;
+  }
+  .banhuaback {
+    background: url('./pic/banhua.jpg') no-repeat;
     background-size: 100% 100%;
   }
   .img1 {
     height: 100%;
     width: 100%;
-    background: url('./spring.jpg') no-repeat;
+    background: url('./pic/imgpic.png') no-repeat;
     background-size: 100% 100%;
   }
 
@@ -443,11 +490,34 @@ $cursor: #fff;
     }
     .typeList > div {
       width: 12%;
-      background-size: 100% 100%;
+      // background-size: 100% 100%;
       height: 100%
     }
+
+    .typeList > div > div > div {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('./pic/redxuan.png') no-repeat;
+      background-size: 100%;
+    }
+
+    .typeList > div > div:nth-child(1) {
+      width: 100%;
+      height: 70%;
+      position: relative;
+    }
+
+    .typeList > div > div:nth-child(2) {
+      color: #5B5B5B;
+      font-size: 22px;
+      text-align: center;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
     .style1 {
-      background: url('./pic/Frame1.png') no-repeat;
+      background: url('./pic/sumiao.png') no-repeat;
     }
     .style2 {
       background: url('./pic/Frame2.png') no-repeat;
@@ -469,7 +539,7 @@ $cursor: #fff;
     }
 
     .style1r {
-      background: url('./pic/Frame1r.png') no-repeat;
+      background: url('./pic/sumiao.png') no-repeat;
     }
     .style2r {
       background: url('./pic/Frame2r.png') no-repeat;
@@ -492,6 +562,20 @@ $cursor: #fff;
 }
 .makeDraw {
   background: url('./pic/Button.png') no-repeat;
+  background-size: 100% 100%;
+  height: 7.2%;
+  width:58.6%;
+  margin: 1.6% auto 0;
+}
+.makeDraw1 {
+  background: url('./chioseType.png') no-repeat;
+  background-size: 100% 100%;
+  height: 7.2%;
+  width:58.6%;
+  margin: 1.6% auto 0;
+}
+.makeDraw2 {
+  background: url('./makeing.png') no-repeat;
   background-size: 100% 100%;
   height: 7.2%;
   width:58.6%;
@@ -896,5 +980,152 @@ $cursor: #fff;
   animation-duration: 1s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
+}
+
+.filterDiv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.filterDiv div {  
+  height: 5%;
+  width: 4%;
+  opacity:1;
+}
+
+.mantle {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(18, 18, 18, 0.85);
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mantle > div {
+ width: 74%;
+ height: 49%;
+ background: #fff;
+ border-radius: 33px;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+}
+
+.mantle > div .title {
+  color: #6F6F6F;
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 7%;
+}
+
+.mantle > div .QRcode {
+  height: 35%;
+  width: 42%;
+  background: url('./pic/er2.png') no-repeat;
+  margin-top: 7%;
+  background-size: 100%;
+}
+
+.mantle > div div:nth-child(3) {
+  color: #010101;
+  font-size: 33px;
+  font-weight: 700;
+  margin-top: 7%;
+}
+
+.mantle > div div:nth-child(4) {
+  color: #010101;
+  font-size: 25px;
+  margin-top: 5%;
+}
+
+.mantle > div div:nth-child(5) {
+  background: #DA2428;
+  height: 12%;
+  width: 40%;
+  color: #fff;
+  font-size: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  margin-top: 7%;
+}
+
+.mantle1 {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: 2;
+}
+.bordercss {
+  background: url('./pic/border.png') no-repeat;
+  height: 100%;
+  width: 100%;
+  background-size: 100% 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.send {
+  width: 45%;
+  height: 100%;
+  float: left;
+  background: url('./pic/Buttonback.png') no-repeat;
+  background-size: 100% 100%;
+}
+
+.newMake {
+  width: 45%;
+  height: 100%;
+  float: right;
+  background: url('./pic/Buttonfasong.png') no-repeat;
+  background-size: 100% 100%;
+}
+
+.backmake {
+  width: 73px;
+  height: 32px;
+  background: url('./pic/fanbutton.png') no-repeat;
+  background-size: 100% 100%;
+  position: absolute;
+  top: 15px;
+  right: 17px;
+  z-index: 1;
+}
+
+.txtDiv {
+    position: absolute;
+    z-index: 1;
+    margin: 0 auto;
+    font-size: 36px;
+    color: #fff;
+    font-weight: 700;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    word-break: break-all;
+    padding: 0 20px;
+    background: url('./pic/imgpic.png') no-repeat;
+    background-size: 100% 100%;
 }
 </style>

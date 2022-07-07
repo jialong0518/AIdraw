@@ -10,7 +10,8 @@ const service = axios.create({
     
 //   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   //发版测试 
-  baseURL: 'http://123.56.254.215:16500',
+  // baseURL: 'https://uat.huanqiujr.com',
+  baseURL: 'https://huanqiu-ai.com',
   //本地
   // baseURL: '',
   // withCredentials: true, // send cookies when cross-domain requests
@@ -41,7 +42,7 @@ service.interceptors.request.use(
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
     }
-    showFullScreenLoading()
+    // showFullScreenLoading()
     return config
   },
   error => {
@@ -67,7 +68,7 @@ service.interceptors.response.use(
     const res = response.data
     // loading.close();
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code != 200) {
+    if (res.code === 2000) {
       endLoading()
       if(res.code != 143 && res.code != 404){
         Message({
@@ -79,7 +80,7 @@ service.interceptors.response.use(
       return Promise.reject(new Error(res.msg || 'Error'))
     }
 
-    if (res.code === 1) {
+    if (res.code === 1000) {
       endLoading()
       Message({
         message: res.msg || 'Error',
@@ -101,7 +102,7 @@ service.interceptors.response.use(
       }
       return Promise.reject(new Error(res.msg || 'Error'))
     } else {
-      tryHideFullScreenLoading()
+      // tryHideFullScreenLoading()
       return res
     }
   },

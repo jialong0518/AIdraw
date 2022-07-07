@@ -3,18 +3,42 @@ import request from '@/utils/request'
 export function login(data) {
   return request({
     url: '/vue-admin-template/user/login',
+    method: 'get',
+    data
+  })
+}
+
+export function picresult(data) {
+  return request({
+    url: '/aipic/picresult',
     method: 'post',
     data
   })
 }
 
-export function getInfo(token) {
+export function picfinish(data) {
   return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
+    url: '/aipic/finish',
+    method: 'post',
+    data
   })
 }
+
+export function playerstatus(data) {
+  return request({
+    url: '/aipic/playerstatusupd',
+    method: 'post',
+    data
+  })
+}
+
+export function sendmsg(data) {
+  return request({
+    url: '/aipic/sendmsg?openid='+data,
+    method: 'get',
+  })
+}
+
 
 export function userlist(data) {
   return request({
