@@ -1,6 +1,7 @@
 <template>
   <div class="homePage">
-    <!-- <div class="titleDiv"></div> !-->
+    <!-- <div class="resetBut" @click="resetBut"></div> -->
+    <div class="titleDiv"></div>
     <div class="carouselDiv">
       <div class="bordercss" v-show="oldPic !== ''||newPic !== ''||imgTxt !==''">
             <div class="img" style="position: relative;">
@@ -12,46 +13,46 @@
               </div>
             </div>
           </div>
-      <el-carousel v-show="oldPic === ''&&newPic === ''&&imgTxt ===''" ref="carousel" trigger="click" :autoplay='false' :setActiveItem="carouselIndex"  style="height: 100%;">
+      <el-carousel @change="lunbochange" v-show="oldPic === ''&&newPic === ''&&imgTxt ===''" ref="carousel" trigger="click" :autoplay='false' :setActiveItem="carouselIndex"  style="height: 100%;">
         <el-carousel-item name="1">
           <div class="bordercss">
-            <div class="img sumiaoback" style="position: relative">
+            <div class="img sumiaoback" :style="{'filter': `blur(${LfilterNum1}px)`}" style="position: relative">
             </div>
           </div>
         </el-carousel-item>
         <el-carousel-item name="2">
           <div class="bordercss">
-            <div class="img shuimoback" style="position: relative;">
+            <div class="img shuimoback" :style="{'filter': `blur(${LfilterNum2}px)`}" style="position: relative;">
             </div>
           </div>
         </el-carousel-item>
         <el-carousel-item name="3">
           <div class="bordercss">
-            <div class="img monaiback" style="position: relative;">
+            <div class="img monaiback" :style="{'filter': `blur(${LfilterNum3}px)`}" style="position: relative;">
             </div>
           </div>
         </el-carousel-item>
         <el-carousel-item name="4">
           <div class="bordercss">
-            <div class="img fangaoback" style="position: relative;">
+            <div class="img fangaoback" :style="{'filter': `blur(${LfilterNum4}px)`}" style="position: relative;">
             </div>
           </div>
         </el-carousel-item>
         <el-carousel-item name="5">
           <div class="bordercss">
-            <div class="img caiqianback" style="position: relative;">
+            <div class="img caiqianback" :style="{'filter': `blur(${LfilterNum5}px)`}" style="position: relative;">
             </div>
           </div>
         </el-carousel-item>
         <el-carousel-item name="6">
           <div class="bordercss">
-            <div class="img bopuback" style="position: relative;">
+            <div class="img bopuback" :style="{'filter': `blur(${LfilterNum6}px)`}" style="position: relative;">
             </div>
           </div>
         </el-carousel-item>
         <el-carousel-item name="7">
           <div class="bordercss">
-            <div class="img banhuaback" style="position: relative;">
+            <div class="img banhuaback" :style="{'filter': `blur(${LfilterNum7}px)`}" style="position: relative;">
             </div>
           </div>
         </el-carousel-item>
@@ -121,10 +122,24 @@ export default {
   name: 'channel',
   data() {
     return {
-      styleIndex: '',
+      styleIndex: 1,
       classSign: '',
       filterArr: [],
+      LfilterArr1: [],
+      LfilterArr2: [],
+      LfilterArr3: [],
+      LfilterArr4: [],
+      LfilterArr5: [],
+      LfilterArr6: [],
+      LfilterArr7: [],
       filterNum: 0,
+      LfilterNum1: 30,
+      LfilterNum2: 30,
+      LfilterNum3: 30,
+      LfilterNum4: 30,
+      LfilterNum5: 30,
+      LfilterNum6: 30,
+      LfilterNum7: 30,
       QRcodeSHow: false,
       picInterval: null,
       oldPic: '',
@@ -139,12 +154,23 @@ export default {
       intervalTime: null,
       goNum: 30,
       setTimer: null,
-      mengbanshow: false
+      mengbanshow: false,
+      LsetTimer: null,
+      lunsettime: null,
     }
   },
   watch: {},
   components: {},
   methods: {
+    lunbochange(data){
+      console.log(data)
+          this.styleIndex = data+1;
+          this.LmaskTiming()
+    },
+    resetBut() {
+      this.$router.push('/');
+      // this.$router.go(0)
+    },
     imgFun(data){
       this.classSign = data;
       // setTimeout(()=>this.classSign = '',3000)
@@ -155,7 +181,8 @@ export default {
       },
     QRcodeFun() {
       this.QRcodeSHow = true;
-      this.picInterval = setInterval(()=>{
+      this.picStateFun()
+      this.picInterval = window.setInterval(()=>{
         this.picStateFun()
       },5000)
     },
@@ -168,11 +195,12 @@ export default {
      picStateFun(){
       picresult({
         openid: '',
-        equipNo: 2
+        equipNo: 1
       }).then(r => {
         // 39.105.33.147:8621
           if(r.data.newPic === '39.105.33.147:8621') {
-            clearInterval(this.picInterval);
+            window.clearInterval(this.picInterval);
+            this.picInterval = null;
             this.$alert('图片生成失败，请点击重绘，重新传输图片', '提示', {
               confirmButtonText: '重绘',
               callback: action => {
@@ -202,12 +230,24 @@ export default {
             this.opendId = r.data.openid;
             this.gameType = r.data.gameType;
             this.imgTxt = r.data.texts||'';
+            this.QRcodeSHow = false;
           }
           if(this.status === '已生成') {
-            clearInterval(this.picInterval);
+            window.clearInterval(this.picInterval);
+            this.picInterval = null;
           }
           if(this.status === '准备中') {
-            clearInterval(this.intervalTime);
+            this.LfilterNum1 = 0;
+            this.LfilterNum2 = 0;
+            this.LfilterNum3 = 0;
+            this.LfilterNum4 = 0;
+            this.LfilterNum5 = 0;
+            this.LfilterNum6 = 0;
+            this.LfilterNum7 = 0;
+            window.clearInterval(this.intervalTime);
+            window.clearInterval(this.LsetTimer)
+            this.intervalTime = null;
+            this.LsetTimer = null;
           }
           console.log(this.oldPic)
       }).catch((e) => {
@@ -226,7 +266,7 @@ export default {
     picfinishFun(){
       picfinish({
         openid: this.opendId,
-        equipNo: 2
+        equipNo: 1
       }).then(r => {
             this.oldPic = '';
             this.newPic = '';
@@ -237,8 +277,24 @@ export default {
             this.mengbanshow = false;
             this.filterArr = [];
             this.filterNum = 0;
-            clearInterval(this.picInterval);
-            clearInterval(this.setTimer);
+            this.goNum = 30;
+            // for(let i = 0; i< 7; i++) {
+            //   if(this.styleIndex !== i+1) {
+            //     this[`LfilterNum${i+1}`] = 30;
+            //   }
+            //   console.log(item)
+            // }
+            // this.LfilterNum1 = 30;
+            // this.LfilterNum2 = 30;
+            // this.LfilterNum3 = 30;
+            // this.LfilterNum4 = 30;
+            // this.LfilterNum5 = 30;
+            // this.LfilterNum6 = 30;
+            // this.LfilterNum7 = 30;
+            window.clearInterval(this.picInterval);
+            window.clearInterval(this.setTimer);
+            this.picInterval = null;
+            this.setTimer = null;
             this.lunboFun();
 
       }).catch((e) => {
@@ -253,10 +309,11 @@ export default {
           "oldPic": this.gameType === '图片' ? this.oldPic : '',
           "texts": this.gameType === '文字' ? this.imgTxt : '',
           "picStyle": this.styleArr[this.styleIndex - 1],
-          "equipNo": 2
+          "equipNo": 1
       }).then(r => {
         if(r.code === 0) {
           this.makeUp = false;
+          this.picStateFun();
         } else {
            Dialog.alert({
               title: '提示',
@@ -278,7 +335,7 @@ export default {
     },
     maskTiming() {
       let timeArr = [];
-      let timeFun = setInterval(()=>{
+      let timeFun = window.setInterval(()=>{
         // document.getElementsByClassName('el-carousel__container')[0].height = 1208 / 336+'px';
         for(let i = 0; i< 3; i++) {
           let mathNum = Math.floor(Math.random()*500+1);
@@ -299,39 +356,99 @@ export default {
         if(300 < this.filterArr.length&&this.filterArr.length < 400)this.filterNum = 5;
         if(400 < this.filterArr.length&&this.filterArr.length < 500)this.filterNum = 0;
         if(this.filterArr.length === 485) {
-          clearInterval(timeFun)
+          window.clearInterval(timeFun)
           timeFun = null;
           this.goNum = 30;
           this.goNumFun()
         }
       },10)
     },
+    LmaskTiming() {
+      let timeArr = [];
+      this[`LfilterArr${this.styleIndex}`] = [];
+      this[`LfilterNum${this.styleIndex}`] = 30;
+        window.clearInterval(this.LsetTimer)
+        this.LsetTimer = null;
+       this.LsetTimer = window.setInterval(()=>{
+         this[`LfilterNum${this.styleIndex}`] = this[`LfilterNum${this.styleIndex}`] - 1;
+        // document.getElementsByClassName('el-carousel__container')[0].height = 1208 / 336+'px';
+        // for(let i = 0; i< 3 + this.styleIndex; i++) {
+        //   let mathNum = Math.floor(Math.random()*500+1);
+        //   if(timeArr.indexOf(mathNum) === -1){
+        //     Math.floor(Math.random()*500+1)
+        //     this[`LfilterArr${this.styleIndex}`].push(mathNum)
+        //     timeArr.push(mathNum)
+        //   }
+          
+        // }
+        // let mathNum = Math.floor(Math.random()*500+1);
+        //   if(timeArr.indexOf(mathNum) === -1){
+        //     Math.floor(Math.random()*500+1)
+        //     this.filterArr.push(mathNum)
+        //     timeArr.push(mathNum)
+        //   }
+        // if(100 < this[`LfilterArr${this.styleIndex}`].length&&this[`LfilterArr${this.styleIndex}`].length < 200)this[`LfilterNum${this.styleIndex}`] = 15;
+        // if(200 < this[`LfilterArr${this.styleIndex}`].length&&this[`LfilterArr${this.styleIndex}`].length < 300)this[`LfilterNum${this.styleIndex}`] = 10;
+        // if(300 < this[`LfilterArr${this.styleIndex}`].length&&this[`LfilterArr${this.styleIndex}`].length < 400)this[`LfilterNum${this.styleIndex}`] = 5;
+        // if(400 < this[`LfilterArr${this.styleIndex}`].length&&this[`LfilterArr${this.styleIndex}`].length < 500)this[`LfilterNum${this.styleIndex}`] = 0;
+        if(this[`LfilterNum${this.styleIndex}`] === 0) {
+          if(this.styleIndex === 1) {
+            this[`LfilterNum7`] = 20;
+            this[`LfilterArr7`] = []
+          } else {
+            this[`LfilterNum${this.styleIndex - 1}`] = 20;
+            this[`LfilterArr${this.styleIndex - 1}`] = [];
+          }
+          window.clearInterval(this.LsetTimer)
+          this.LsetTimer = null;
+        }
+      },200)
+    },
     goNumFun() {
-      this.setTimer = setInterval(()=>{
+      this.setTimer = window.setInterval(()=>{
         this.goNum = this.goNum - 1;
           console.log(this.goNum)
+          console.log(this.setTimer)
           if(this.goNum === 0 || this.goNum < 0) {
-            clearInterval(this.setTimer)
+              window.clearInterval(this.setTimer)
+              this.setTimer = null;
             console.log(this.goNum)
             this.picfinishFun()
           }
       }, 1000)
     },
     lunboFun() {
-      this.intervalTime = setInterval(()=>{
+      window.clearTimeout(this.intervalTime)
+      this.intervalTime = null;
+      this.intervalTime = window.setInterval(()=>{
         if(this.styleIndex === 7) this.styleIndex = 0
         this.styleIndex ++;
         this.$refs.carousel.setActiveItem(this.styleIndex - 1)
-      }, 6000)
+        // this.LmaskTiming()
+        this.lunboFun();
+      }, 10000)
+      // this.intervalTime = window.setInterval(()=>{
+      //   window.clearInterval(this.LsetTimer)
+      //   this.LsetTimer = null;
+      //   if(this.styleIndex === 7) this.styleIndex = 0
+      //   this.styleIndex ++;
+      //   this.$refs.carousel.setActiveItem(this.styleIndex - 1)
+      //   this.LmaskTiming()
+      // }, 10000)
     }
   },
   beforeDestroy(){
-      clearInterval(this.intervalTime)
-      clearInterval(this.picInterval)
+      window.clearInterval(this.intervalTime)
+      window.clearInterval(this.picInterval)
+      this.intervalTime = null;
+      this.picInterval = null
   },
   mounted: function() {
-    clearInterval(this.intervalTime)
-    clearInterval(this.picInterval)
+    this.lunbochange(0)
+    window.clearInterval(this.intervalTime)
+    window.clearInterval(this.picInterval)
+    this.intervalTime = null;
+    this.picInterval = null
     this.lunboFun();
     // this.picfinishFun()
   }
@@ -411,8 +528,8 @@ $cursor: #fff;
 }
 
 .titleDiv {
-  width: 62%;
-  height: 7.5%;
+  width: 77%;
+  height: 4.3%;
   background: url('./BT.png') no-repeat;
   background-size: 100% 100%;
   margin: 4% auto 0;
@@ -422,7 +539,7 @@ $cursor: #fff;
   height:27.8%;
   width:88.2%;
   margin: 1.6% auto 0;
-  margin-top: 20%;
+  margin-top: 8%;
   .img {
     height: 81%;
     width: 89%;
@@ -499,7 +616,7 @@ $cursor: #fff;
       width: 100%;
       height: 100%;
       background: url('./pic/redxuan.png') no-repeat;
-      background-size: 100%;
+      background-size: 100% 100%;
     }
 
     .typeList > div > div:nth-child(1) {
@@ -518,24 +635,38 @@ $cursor: #fff;
 
     .style1 {
       background: url('./pic/sumiao.png') no-repeat;
+      background-size: 100% 100%;
+      border-radius: 20px;
     }
     .style2 {
       background: url('./pic/Frame2.png') no-repeat;
+      background-size: 100% 100%;
+      border-radius: 20px;
     }
     .style3 {
       background: url('./pic/Frame3.png') no-repeat;
+      background-size: 100% 100%;
+      border-radius: 20px;
     }
     .style4 {
       background: url('./pic/Frame4.png') no-repeat;
+      background-size: 100% 100%;
+      border-radius: 20px;
     }
     .style5 {
       background: url('./pic/Frame5.png') no-repeat;
+      background-size: 100% 100%;
+      border-radius: 20px;
     }
     .style6 {
       background: url('./pic/Frame6.png') no-repeat;
+      background-size: 100% 100%;
+      border-radius: 20px;
     }
     .style7 {
       background: url('./pic/Frame7.png') no-repeat;
+      background-size: 100% 100%;
+      border-radius: 20px;
     }
 
     .style1r {
@@ -599,7 +730,7 @@ $cursor: #fff;
 }
 .footerDiv {
   background: #D2D3D7;
-  height: 6.6%;
+  height: 13%;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -607,8 +738,8 @@ $cursor: #fff;
   position: absolute;
   bottom: 0;
   .footerLogo {
-    height: 40%;
-    width: 32.6%;
+    height: 22%;
+    width: 58%;
     background: url('./pic/footerLogo.png') no-repeat;
     background-size: 100% 100%;
   }
@@ -1032,9 +1163,9 @@ $cursor: #fff;
 .mantle > div .QRcode {
   height: 35%;
   width: 42%;
-  background: url('./pic/er2.png') no-repeat;
+  background: url('./pic/er1.png') no-repeat;
   margin-top: 7%;
-  background-size: 100%;
+  background-size: 100% 100%;
 }
 
 .mantle > div div:nth-child(3) {
@@ -1127,5 +1258,14 @@ $cursor: #fff;
     padding: 0 20px;
     background: url('./pic/imgpic.png') no-repeat;
     background-size: 100% 100%;
+}
+
+.resetBut {
+  // background: red;
+  height: 3%;
+  width: 6%;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 </style>
