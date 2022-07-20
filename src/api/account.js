@@ -34,8 +34,9 @@ export function playerstatus(data) {
 
 export function sendmsg(data) {
   return request({
-    url: '/aipic/sendmsg?openid='+data,
-    method: 'get',
+    url: '/aipic/sendmsg',
+    method: 'post',
+    data
   })
 }
 

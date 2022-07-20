@@ -184,7 +184,7 @@ export default {
       this.picStateFun()
       this.picInterval = window.setInterval(()=>{
         this.picStateFun()
-      },5000)
+      },4000)
     },
     QRcodeClose() {
       this.QRcodeSHow = false;
@@ -204,7 +204,9 @@ export default {
             this.$alert('图片生成失败，请点击重绘，重新传输图片', '提示', {
               confirmButtonText: '重绘',
               callback: action => {
-               location.reload()
+               window.clearInterval(this.picInterval);
+               this.picInterval = null;
+               this.picfinishFun();
               }
             });
             return
@@ -255,10 +257,16 @@ export default {
       });
     },
     sendmsgFun() {
-      sendmsg(
-        this.opendId
-      ).then(r => {
-           this.picfinishFun();
+      sendmsg({
+        openid: this.opendId,
+        equipNo: 1
+      }).then(r => {
+        this.$alert('图片已发送至手机', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            });
+           window.setTimeout(()=>{this.picfinishFun();}, 5000)
       }).catch((e) => {
           console.log(e)
       });
@@ -337,7 +345,7 @@ export default {
       let timeArr = [];
       let timeFun = window.setInterval(()=>{
         // document.getElementsByClassName('el-carousel__container')[0].height = 1208 / 336+'px';
-        for(let i = 0; i< 3; i++) {
+        for(let i = 0; i< 8; i++) {
           let mathNum = Math.floor(Math.random()*500+1);
           if(timeArr.indexOf(mathNum) === -1){
             Math.floor(Math.random()*500+1)
@@ -402,7 +410,7 @@ export default {
           window.clearInterval(this.LsetTimer)
           this.LsetTimer = null;
         }
-      },200)
+      },100)
     },
     goNumFun() {
       this.setTimer = window.setInterval(()=>{
@@ -426,7 +434,7 @@ export default {
         this.$refs.carousel.setActiveItem(this.styleIndex - 1)
         // this.LmaskTiming()
         this.lunboFun();
-      }, 10000)
+      }, 6000)
       // this.intervalTime = window.setInterval(()=>{
       //   window.clearInterval(this.LsetTimer)
       //   this.LsetTimer = null;
@@ -576,9 +584,12 @@ $cursor: #fff;
   }
   .img1 {
     height: 100%;
-    width: 100%;
+    // width: 100%;
     background: url('./pic/imgpic.png') no-repeat;
     background-size: 100% 100%;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
   }
 
   
