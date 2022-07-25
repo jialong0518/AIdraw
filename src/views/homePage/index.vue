@@ -94,7 +94,7 @@
       <div @click="sendmsgFun" class="newMake"></div>
       <div @click="picfinishFun" class="send"></div>
     </div>
-    <div v-show="status === '已生成'" style="color: #6A718B;font-size: 24px;text-align: center;margin-top: 7%;">* 发送至手机后，请在手机界面点击“刷新”</div>
+    <!-- <div v-show="status === '已生成'" style="color: #6A718B;font-size: 24px;text-align: center;margin-top: 7%;">* 发送至手机后，请在手机界面点击“刷新”</div> -->
     <div v-show="status === '已生成'" style="color: #000;font-size: 32px;text-align: center;margin-top: 3%;"><span style="color: blue;">{{goNum}}</span>后将自动返回</div>
     <div class="footerDiv">
       <div class="footerLogo"></div>
@@ -157,6 +157,7 @@ export default {
       mengbanshow: false,
       LsetTimer: null,
       lunsettime: null,
+      maskTimingTime: null,
     }
   },
   watch: {},
@@ -165,6 +166,7 @@ export default {
     lunbochange(data){
       console.log(data)
           this.styleIndex = data+1;
+          this.LsetTimer = null;
           this.LmaskTiming()
     },
     resetBut() {
@@ -179,9 +181,16 @@ export default {
         this.styleIndex = data;
         this.$refs.carousel.setActiveItem(data - 1)
       },
+      cleartime(data){
+        for(let i = 0 ; i<= data; i++) {
+          window.clearInterval(i);
+      }
+      },
     QRcodeFun() {
       this.QRcodeSHow = true;
       this.picStateFun()
+      // this.picInterval = null;
+      this.cleartime(this.picInterval)
       this.picInterval = window.setInterval(()=>{
         this.picStateFun()
       },4000)
@@ -199,12 +208,17 @@ export default {
       }).then(r => {
         // 39.105.33.147:8621
           if(r.data.newPic === '39.105.33.147:8621') {
-            window.clearInterval(this.picInterval);
-            this.picInterval = null;
+            this.cleartime(this.picInterval)
+            this.cleartime(this.intervalTime)
+            // window.clearInterval(this.picInterval);
+            // window.clearInterval(this.intervalTime);
+            // this.picInterval = null;
+            // this.intervalTime = null;
             this.$alert('图片生成失败，请点击重绘，重新传输图片', '提示', {
               confirmButtonText: '重绘',
               callback: action => {
-               window.clearInterval(this.picInterval);
+              //  window.clearInterval(this.picInterval);
+                this.cleartime(this.picInterval)
                this.picInterval = null;
                this.picfinishFun();
               }
@@ -216,6 +230,7 @@ export default {
             this.mengbanshow = true;
             this.filterArr = [];
             this.filterNum = 20;
+            this.maskTimingTime = null;
             this.maskTiming()
           }
           if(r.code === 1) {
@@ -235,8 +250,12 @@ export default {
             this.QRcodeSHow = false;
           }
           if(this.status === '已生成') {
-            window.clearInterval(this.picInterval);
+            // window.clearInterval(this.picInterval);
+            // window.clearInterval(this.intervalTime);
+            this.cleartime(this.picInterval)
+            this.cleartime(this.intervalTime)
             this.picInterval = null;
+            this.intervalTime = null;
           }
           if(this.status === '准备中') {
             this.LfilterNum1 = 0;
@@ -246,8 +265,10 @@ export default {
             this.LfilterNum5 = 0;
             this.LfilterNum6 = 0;
             this.LfilterNum7 = 0;
-            window.clearInterval(this.intervalTime);
-            window.clearInterval(this.LsetTimer)
+            // window.clearInterval(this.intervalTime);
+            // window.clearInterval(this.LsetTimer);
+            this.cleartime(this.intervalTime)
+            this.cleartime(this.LsetTimer)
             this.intervalTime = null;
             this.LsetTimer = null;
           }
@@ -283,6 +304,7 @@ export default {
             this.gameType = '';
             this.imgTxt = '';
             this.mengbanshow = false;
+            this.maskTimingTime = null;
             this.filterArr = [];
             this.filterNum = 0;
             this.goNum = 30;
@@ -299,10 +321,15 @@ export default {
             // this.LfilterNum5 = 30;
             // this.LfilterNum6 = 30;
             // this.LfilterNum7 = 30;
-            window.clearInterval(this.picInterval);
-            window.clearInterval(this.setTimer);
+            // window.clearInterval(this.picInterval);  
+            // window.clearInterval(this.setTimer);
+            // window.clearInterval(this.intervalTime);
+            this.cleartime(this.picInterval)
+            this.cleartime(this.setTimer)
+            this.cleartime(this.intervalTime)
             this.picInterval = null;
             this.setTimer = null;
+            this.intervalTime = null;
             this.lunboFun();
 
       }).catch((e) => {
@@ -343,9 +370,10 @@ export default {
     },
     maskTiming() {
       let timeArr = [];
-      let timeFun = window.setInterval(()=>{
+      this.maskTimingTime = null;
+      this.maskTimingTime = window.setInterval(()=>{
         // document.getElementsByClassName('el-carousel__container')[0].height = 1208 / 336+'px';
-        for(let i = 0; i< 8; i++) {
+        for(let i = 0; i< 12; i++) {
           let mathNum = Math.floor(Math.random()*500+1);
           if(timeArr.indexOf(mathNum) === -1){
             Math.floor(Math.random()*500+1)
@@ -364,8 +392,9 @@ export default {
         if(300 < this.filterArr.length&&this.filterArr.length < 400)this.filterNum = 5;
         if(400 < this.filterArr.length&&this.filterArr.length < 500)this.filterNum = 0;
         if(this.filterArr.length === 485) {
-          window.clearInterval(timeFun)
-          timeFun = null;
+          // window.clearInterval(this.maskTimingTime)
+          this.cleartime(this.maskTimingTime)
+          this.maskTimingTime = null;
           this.goNum = 30;
           this.goNumFun()
         }
@@ -375,8 +404,9 @@ export default {
       let timeArr = [];
       this[`LfilterArr${this.styleIndex}`] = [];
       this[`LfilterNum${this.styleIndex}`] = 30;
-        window.clearInterval(this.LsetTimer)
-        this.LsetTimer = null;
+        // window.clearInterval(this.LsetTimer)
+        this.cleartime(this.LsetTimer)
+       this.LsetTimer = null;
        this.LsetTimer = window.setInterval(()=>{
          this[`LfilterNum${this.styleIndex}`] = this[`LfilterNum${this.styleIndex}`] - 1;
         // document.getElementsByClassName('el-carousel__container')[0].height = 1208 / 336+'px';
@@ -407,7 +437,8 @@ export default {
             this[`LfilterNum${this.styleIndex - 1}`] = 20;
             this[`LfilterArr${this.styleIndex - 1}`] = [];
           }
-          window.clearInterval(this.LsetTimer)
+          // window.clearInterval(this.LsetTimer)
+          this.cleartime(this.LsetTimer)
           this.LsetTimer = null;
         }
       },100)
@@ -418,7 +449,8 @@ export default {
           console.log(this.goNum)
           console.log(this.setTimer)
           if(this.goNum === 0 || this.goNum < 0) {
-              window.clearInterval(this.setTimer)
+              // window.clearInterval(this.setTimer)
+              this.cleartime(this.setTimer)
               this.setTimer = null;
             console.log(this.goNum)
             this.picfinishFun()
@@ -426,14 +458,14 @@ export default {
       }, 1000)
     },
     lunboFun() {
-      window.clearTimeout(this.intervalTime)
+      // window.clearTimeout(this.intervalTime)
       this.intervalTime = null;
       this.intervalTime = window.setInterval(()=>{
         if(this.styleIndex === 7) this.styleIndex = 0
         this.styleIndex ++;
         this.$refs.carousel.setActiveItem(this.styleIndex - 1)
         // this.LmaskTiming()
-        this.lunboFun();
+        // this.lunboFun();
       }, 6000)
       // this.intervalTime = window.setInterval(()=>{
       //   window.clearInterval(this.LsetTimer)
@@ -446,8 +478,10 @@ export default {
     }
   },
   beforeDestroy(){
-      window.clearInterval(this.intervalTime)
-      window.clearInterval(this.picInterval)
+      // window.clearInterval(this.intervalTime)
+      // window.clearInterval(this.picInterval)
+      this.cleartime(this.intervalTime)
+      this.cleartime(this.picInterval)
       this.intervalTime = null;
       this.picInterval = null
   },
