@@ -8,9 +8,11 @@
               <div class="txtDiv" v-show="imgTxt !==''&&newPic ===''">{{imgTxt}}</div>
               <div @click="picfinishFun" class="backmake" v-show="status !== '已生成' && status !== ''"></div>
               <img :src="`${imgUrl}/${newPic !=='' ? newPic : oldPic}`" :style="{'filter': `blur(${filterNum}px)`}" class="img1" />
-              <div v-show="mengbanshow" class="filterDiv" >
-                <div :style="{'filter': filterArr.indexOf(item) !== -1 || filterArr.length > 480 ? '' :'blur(10px)','background': filterArr.indexOf(item) !== -1 || filterArr.length > 480 ? '' :'#fff'}" v-for="item in 500" :key="item"></div>
-              </div>
+              <!--
+                 <div v-show="mengbanshow" class="filterDiv" >
+                   <div :style="{'filter': filterArr.indexOf(item) !== -1 || filterArr.length > 480 ? '' :'blur(10px)','background': filterArr.indexOf(item) !== -1 || filterArr.length > 480 ? '' :'#fff'}" v-for="item in 500" :key="item"></div>
+                 </div>
+               -->
             </div>
           </div>
       <el-carousel @change="lunbochange" v-show="oldPic === ''&&newPic === ''&&imgTxt ===''" ref="carousel" trigger="click" :autoplay='false' :setActiveItem="carouselIndex"  style="height: 100%;">
@@ -59,7 +61,8 @@
         
       </el-carousel>
     </div>
-    <div class="styleTypeDiv" v-show="status !== '已生成'">
+    <!--  v-show="status !== '已生成'" -->
+    <div class="styleTypeDiv">
       <div class="title">请选择“白泽”作画风格</div>
       <div class="typeList">
         <!--
@@ -72,25 +75,27 @@
         <div @click="typeFun(7)" :class="[styleIndex !== 7 ? 'style7' : 'style7r' ]"></div>  
         !-->
         <div :key="item" v-for="item in 7" @click="typeFun(item)">
-          <div :class="`style${item}`">
+          <div :class="`style${item}`" :style="{'opacity': status !== '进行中'? 1 : 0.5}">
             <div v-show="styleIndex === item"></div>
           </div>
-          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 1">素描</div>
-          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 2">水墨</div>
-          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 3">莫奈</div>
-          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 4">梵高</div>
-          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 5">彩铅</div>
-          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 6">波普</div>
-          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B'}" v-if="item === 7">版画</div>
+          <span v-show="styleIndex === item&&status === '进行中'">生成中</span>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B','opacity': status !== '进行中'? 1 : 0.5}" v-if="item === 1">素描</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B','opacity': status !== '进行中'? 1 : 0.5}" v-if="item === 2">水墨</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B','opacity': status !== '进行中'? 1 : 0.5}" v-if="item === 3">莫奈</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B','opacity': status !== '进行中'? 1 : 0.5}" v-if="item === 4">梵高</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B','opacity': status !== '进行中'? 1 : 0.5}" v-if="item === 5">彩铅</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B','opacity': status !== '进行中'? 1 : 0.5}" v-if="item === 6">波普</div>
+          <div :style="{'color': styleIndex === item ? '#DA2428' : '#5B5B5B','opacity': status !== '进行中'? 1 : 0.5}" v-if="item === 7">版画</div>
         </div>
       </div>
     </div>
     <div class="makeDraw" v-show="status === ''" @click="QRcodeFun"></div>
     <div class="makeDraw1" v-show="status === '准备中' && styleIndex === ''"></div>
     <div class="makeDraw" v-show="status === '准备中' && styleIndex !== ''" @click="startMakeFun"></div>
-    <div class="makeDraw2" v-show="status === '进行中'"></div>
-    
-    <div v-show="status === '已生成'" style="width:88.2%;height: 6.8%;margin: 15% auto 0;">
+    <div v-show="status === '进行中'" class="makeDraw2"><span>“白泽”作画中<i style="color: #000;font-size: 40px;    margin-left: 15px;
+    position: relative;
+    bottom: -3px;" class="el-icon-loading"></i></span></div>
+    <div v-show="status === '已生成'" style="width:88.2%;height: 6.8%;margin: 7% auto 0;">
       <div @click="sendmsgFun" class="newMake"></div>
       <div @click="picfinishFun" class="send"></div>
     </div>
@@ -141,7 +146,7 @@ export default {
       LfilterNum6: 30,
       LfilterNum7: 30,
       QRcodeSHow: false,
-      picInterval: null,
+      picInterval: [],
       oldPic: '',
       newPic: '',
       status: '',
@@ -151,13 +156,13 @@ export default {
       styleArr: [ 'sumiao.png', 'shuimo.jpeg','monai.png', 'fangao.jpeg', 'caiqian.jpeg', 'bopu.png', 'banhua.png' ],
       imgTxt: '',
       gameType: '',
-      intervalTime: null,
-      goNum: 30,
-      setTimer: null,
+      intervalTime: [],
+      goNum: 120,
+      setTimer: [],
       mengbanshow: false,
-      LsetTimer: null,
-      lunsettime: null,
-      maskTimingTime: null,
+      LsetTimer: [],
+      lunsettime: [],
+      maskTimingTime: [],
     }
   },
   watch: {},
@@ -166,7 +171,7 @@ export default {
     lunbochange(data){
       console.log(data)
           this.styleIndex = data+1;
-          this.LsetTimer = null;
+          // this.LsetTimer = null;
           this.LmaskTiming()
     },
     resetBut() {
@@ -178,12 +183,32 @@ export default {
       // setTimeout(()=>this.classSign = '',3000)
     },
       typeFun(data) {
+        if(this.status === '进行中')return
+        console.log(this.oldPic)
+        console.log(this.newPic)
+        console.log(this.status)
         this.styleIndex = data;
         this.$refs.carousel.setActiveItem(data - 1)
+        if(this.status === '已生成') {
+          this.startMakeFun()
+          // this.oldPic = '';
+            this.newPic = '';
+            // this.status = '';
+            // this.opendId = '';
+            // this.gameType = '';
+            // this.imgTxt = '';
+            this.goNum = 120;
+            this.cleartime(this.setTimer)
+            this.cleartime(this.picInterval)
+            let t = window.setInterval(()=>{
+              this.picStateFun()
+            },4000)
+            this.picInterval.push(t)
+        }
       },
       cleartime(data){
-        for(let i = 0 ; i<= data; i++) {
-          window.clearInterval(i);
+        for(let i = 0 ; i<= data.length; i++) {
+          window.clearInterval(data[i]);
       }
       },
     QRcodeFun() {
@@ -191,9 +216,10 @@ export default {
       this.picStateFun()
       // this.picInterval = null;
       this.cleartime(this.picInterval)
-      this.picInterval = window.setInterval(()=>{
+      let t = window.setInterval(()=>{
         this.picStateFun()
       },4000)
+      this.picInterval.push(t)
     },
     QRcodeClose() {
       this.QRcodeSHow = false;
@@ -219,7 +245,7 @@ export default {
               callback: action => {
               //  window.clearInterval(this.picInterval);
                 this.cleartime(this.picInterval)
-               this.picInterval = null;
+              //  this.picInterval = null;
                this.picfinishFun();
               }
             });
@@ -230,7 +256,7 @@ export default {
             this.mengbanshow = true;
             this.filterArr = [];
             this.filterNum = 20;
-            this.maskTimingTime = null;
+            // this.maskTimingTime = null;
             this.maskTiming()
           }
           if(r.code === 1) {
@@ -240,6 +266,7 @@ export default {
             this.opendId = '';
             this.gameType = '';
             this.imgTxt = '';
+            return
           } else {
             this.oldPic = r.data.oldPic;
             this.newPic = r.data.newPic;
@@ -254,8 +281,8 @@ export default {
             // window.clearInterval(this.intervalTime);
             this.cleartime(this.picInterval)
             this.cleartime(this.intervalTime)
-            this.picInterval = null;
-            this.intervalTime = null;
+            // this.picInterval = null;
+            // this.intervalTime = null;
           }
           if(this.status === '准备中') {
             this.LfilterNum1 = 0;
@@ -269,8 +296,8 @@ export default {
             // window.clearInterval(this.LsetTimer);
             this.cleartime(this.intervalTime)
             this.cleartime(this.LsetTimer)
-            this.intervalTime = null;
-            this.LsetTimer = null;
+            // this.intervalTime = null;
+            // this.LsetTimer = null;
           }
           console.log(this.oldPic)
       }).catch((e) => {
@@ -287,7 +314,7 @@ export default {
               callback: action => {
               }
             });
-           window.setTimeout(()=>{this.picfinishFun();}, 5000)
+          //  window.setTimeout(()=>{this.picfinishFun();}, 5000)
       }).catch((e) => {
           console.log(e)
       });
@@ -304,10 +331,10 @@ export default {
             this.gameType = '';
             this.imgTxt = '';
             this.mengbanshow = false;
-            this.maskTimingTime = null;
+            // this.maskTimingTime = null;
             this.filterArr = [];
             this.filterNum = 0;
-            this.goNum = 30;
+            this.goNum = 120;
             // for(let i = 0; i< 7; i++) {
             //   if(this.styleIndex !== i+1) {
             //     this[`LfilterNum${i+1}`] = 30;
@@ -327,9 +354,9 @@ export default {
             this.cleartime(this.picInterval)
             this.cleartime(this.setTimer)
             this.cleartime(this.intervalTime)
-            this.picInterval = null;
-            this.setTimer = null;
-            this.intervalTime = null;
+            // this.picInterval = null;
+            // this.setTimer = null;
+            // this.intervalTime = null;
             this.lunboFun();
 
       }).catch((e) => {
@@ -370,35 +397,44 @@ export default {
     },
     maskTiming() {
       let timeArr = [];
-      this.maskTimingTime = null;
-      this.maskTimingTime = window.setInterval(()=>{
+      // this.maskTimingTime = null;
+      this.filterNum = 30;
+      let t = window.setInterval(()=>{
         // document.getElementsByClassName('el-carousel__container')[0].height = 1208 / 336+'px';
-        for(let i = 0; i< 12; i++) {
-          let mathNum = Math.floor(Math.random()*500+1);
-          if(timeArr.indexOf(mathNum) === -1){
-            Math.floor(Math.random()*500+1)
-            this.filterArr.push(mathNum)
-            timeArr.push(mathNum)
-          }
-        }
+        // for(let i = 0; i< 12; i++) {
+        //   let mathNum = Math.floor(Math.random()*500+1);
+        //   if(timeArr.indexOf(mathNum) === -1){
+        //     Math.floor(Math.random()*500+1)
+        //     this.filterArr.push(mathNum)
+        //     timeArr.push(mathNum)
+        //   }
+        // }
         // let mathNum = Math.floor(Math.random()*500+1);
         //   if(timeArr.indexOf(mathNum) === -1){
         //     Math.floor(Math.random()*500+1)
         //     this.filterArr.push(mathNum)
         //     timeArr.push(mathNum)
         //   }
-        if(100 < this.filterArr.length&&this.filterArr.length < 200)this.filterNum = 15;
-        if(200 < this.filterArr.length&&this.filterArr.length < 300)this.filterNum = 10;
-        if(300 < this.filterArr.length&&this.filterArr.length < 400)this.filterNum = 5;
-        if(400 < this.filterArr.length&&this.filterArr.length < 500)this.filterNum = 0;
-        if(this.filterArr.length === 485) {
+        // if(100 < this.filterArr.length&&this.filterArr.length < 200)this.filterNum = 15;
+        // if(200 < this.filterArr.length&&this.filterArr.length < 300)this.filterNum = 10;
+        // if(300 < this.filterArr.length&&this.filterArr.length < 400)this.filterNum = 5;
+        // if(400 < this.filterArr.length&&this.filterArr.length < 500)this.filterNum = 0;
+        // if(this.filterArr.length === 485) {
+        //   // window.clearInterval(this.maskTimingTime)
+        //   this.cleartime(this.maskTimingTime)
+        //   this.maskTimingTime = null;
+        //   this.goNum = 30;
+        //   this.goNumFun()
+        // }
+        this.filterNum --
+        if(this.filterNum === 0) {
           // window.clearInterval(this.maskTimingTime)
           this.cleartime(this.maskTimingTime)
-          this.maskTimingTime = null;
-          this.goNum = 30;
+          this.goNum = 120;
           this.goNumFun()
         }
-      },10)
+      },100)
+      this.maskTimingTime.push(t)
     },
     LmaskTiming() {
       let timeArr = [];
@@ -406,8 +442,8 @@ export default {
       this[`LfilterNum${this.styleIndex}`] = 30;
         // window.clearInterval(this.LsetTimer)
         this.cleartime(this.LsetTimer)
-       this.LsetTimer = null;
-       this.LsetTimer = window.setInterval(()=>{
+      //  this.LsetTimer = null;
+       let t = window.setInterval(()=>{
          this[`LfilterNum${this.styleIndex}`] = this[`LfilterNum${this.styleIndex}`] - 1;
         // document.getElementsByClassName('el-carousel__container')[0].height = 1208 / 336+'px';
         // for(let i = 0; i< 3 + this.styleIndex; i++) {
@@ -439,34 +475,35 @@ export default {
           }
           // window.clearInterval(this.LsetTimer)
           this.cleartime(this.LsetTimer)
-          this.LsetTimer = null;
+          // this.LsetTimer = null;
         }
       },100)
+      this.LsetTimer.push(t)
     },
     goNumFun() {
-      this.setTimer = window.setInterval(()=>{
+      let t = window.setInterval(()=>{
         this.goNum = this.goNum - 1;
-          console.log(this.goNum)
-          console.log(this.setTimer)
           if(this.goNum === 0 || this.goNum < 0) {
               // window.clearInterval(this.setTimer)
               this.cleartime(this.setTimer)
-              this.setTimer = null;
+              // this.setTimer = null;
             console.log(this.goNum)
             this.picfinishFun()
           }
       }, 1000)
+      this.setTimer.push(t)
     },
     lunboFun() {
       // window.clearTimeout(this.intervalTime)
-      this.intervalTime = null;
-      this.intervalTime = window.setInterval(()=>{
+      // this.intervalTime = null;
+      let t = window.setInterval(()=>{
         if(this.styleIndex === 7) this.styleIndex = 0
         this.styleIndex ++;
         this.$refs.carousel.setActiveItem(this.styleIndex - 1)
         // this.LmaskTiming()
         // this.lunboFun();
       }, 6000)
+      this.intervalTime.push(t)
       // this.intervalTime = window.setInterval(()=>{
       //   window.clearInterval(this.LsetTimer)
       //   this.LsetTimer = null;
@@ -482,15 +519,15 @@ export default {
       // window.clearInterval(this.picInterval)
       this.cleartime(this.intervalTime)
       this.cleartime(this.picInterval)
-      this.intervalTime = null;
-      this.picInterval = null
+      // this.intervalTime = null;
+      // this.picInterval = null
   },
   mounted: function() {
     this.lunbochange(0)
     window.clearInterval(this.intervalTime)
     window.clearInterval(this.picInterval)
-    this.intervalTime = null;
-    this.picInterval = null
+    // this.intervalTime = null;
+    // this.picInterval = null
     this.lunboFun();
     // this.picfinishFun()
   }
@@ -578,7 +615,7 @@ $cursor: #fff;
 }
 
 .carouselDiv {
-  height:27.8%;
+  height:31.8%;
   width:88.2%;
   margin: 1.6% auto 0;
   margin-top: 8%;
@@ -653,7 +690,8 @@ $cursor: #fff;
     .typeList > div {
       width: 12%;
       // background-size: 100% 100%;
-      height: 100%
+      height: 100%;
+      position: relative;
     }
 
     .typeList > div > div > div {
@@ -670,7 +708,16 @@ $cursor: #fff;
       position: relative;
     }
 
-    .typeList > div > div:nth-child(2) {
+    .typeList > div > span:nth-child(2) {
+      position: absolute;
+      top: 22px;
+      left: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #DA2428;
+    }
+
+    .typeList > div > div:nth-child(3) {
       color: #5B5B5B;
       font-size: 22px;
       text-align: center;
@@ -751,11 +798,19 @@ $cursor: #fff;
   margin: 1.6% auto 0;
 }
 .makeDraw2 {
-  background: url('./makeing.png') no-repeat;
+  // background: url('./makeing.png') no-repeat;
+  color: #000;
+  font-size: 36px;
+  background: #D2D3D7;
   background-size: 100% 100%;
   height: 7.2%;
   width:58.6%;
-  margin: 1.6% auto 0;
+  margin: 7% auto 0;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 80px;
 }
 .textArea {
   margin: 3.2% auto 0;
